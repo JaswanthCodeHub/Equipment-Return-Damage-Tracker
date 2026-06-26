@@ -83,15 +83,26 @@ def create_app(test_config: dict | None = None) -> Flask:
         template_folder=str(ROOT / "frontend" / "templates"),
         static_folder=str(ROOT / "frontend" / "static"),
     )
+    db_path = os.environ.get("TRACKER_DB")
+    if not db_path:
+        if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+            db_path = "/tmp/equipment_tracker.db"
+        else:
+            db_path = str(DEFAULT_DB)
+
     app.config.update(
-        DATABASE=os.environ.get("TRACKER_DB", str(DEFAULT_DB)),
+        DATABASE=db_path,
         SECRET_KEY=os.environ.get("SECRET_KEY", "sd-digitals-development-key"),
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE="Lax",
     )
     if test_config:
         app.config.update(test_config)
-    Path(app.config["DATABASE"]).parent.mkdir(parents=True, exist_ok=True)
+    try:
+        Path(app.config["DATABASE"]).parent.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        app.config["DATABASE"] = "/tmp/equipment_tracker.db"
+        Path(app.config["DATABASE"]).parent.mkdir(parents=True, exist_ok=True)
 
     def now() -> str:
         return datetime.now(timezone.utc).isoformat()
