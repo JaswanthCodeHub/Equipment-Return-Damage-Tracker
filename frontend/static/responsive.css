@@ -54,6 +54,17 @@
     border: 0;
   }
 
+  body.app-active #logoutBtn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    font-size: 12px;
+    height: 34px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
   body[data-portal-mode="admin"].app-active main,
   body[data-portal-mode="user"].app-active main {
     padding: 22px 18px 42px;
