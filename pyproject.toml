@@ -1,2 +1,11 @@
+[project]
+name = "equipment-tracker"
+version = "0.1.0"
+description = "Equipment Return & Damage Tracker"
+dependencies = [
+    "Flask>=3.0,<4.0",
+    "gunicorn>=22.0,<24.0"
+]
+
 [tool.vercel]
 entrypoint = "backend.app:app"
