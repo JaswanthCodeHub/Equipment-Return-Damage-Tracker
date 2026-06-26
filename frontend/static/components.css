@@ -428,6 +428,14 @@ body.app-active .metric-line {
   background: rgba(248, 250, 252, .82);
 }
 
+body.app-active .admin-equipment-stats span {
+  color: var(--text-soft);
+}
+
+body.app-active .admin-equipment-stats b {
+  color: var(--text);
+}
+
 body.app-active .content-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(300px, .8fr);
