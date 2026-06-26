@@ -1,0 +1,107 @@
+body[data-portal-mode="admin"].app-active .app-shell {
+  display: grid;
+  grid-template-columns: 286px minmax(0, 1fr);
+}
+
+body[data-portal-mode="admin"].app-active .sidebar {
+  position: sticky;
+  top: 0;
+  width: 286px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px;
+  border-right: 1px solid rgba(229, 231, 235, .86);
+  background: rgba(255, 255, 255, .90);
+  box-shadow: 18px 0 45px rgba(15, 23, 42, .05);
+  backdrop-filter: blur(18px);
+}
+
+body[data-portal-mode="admin"].app-active .sidebar nav {
+  display: grid;
+  gap: 8px;
+  margin-top: 30px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+body[data-portal-mode="admin"].app-active .sidebar-foot {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+
+body[data-portal-mode="admin"].app-active #logoutBtn {
+  flex: 0 0 auto;
+  color: var(--text-soft);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #FFFFFF;
+}
+
+body[data-portal-mode="admin"].app-active main {
+  margin-left: 0 !important;
+  padding: 30px;
+}
+
+body[data-portal-mode="admin"].app-active #pageContent {
+  padding-bottom: 42px;
+}
+
+body[data-portal-mode="admin"].app-active .admin-equipment-page {
+  display: grid;
+  grid-template-columns: minmax(330px, .72fr) minmax(0, 1.28fr);
+  gap: 22px;
+}
+
+body[data-portal-mode="admin"].app-active .admin-equipment-panel {
+  padding: 22px;
+}
+
+body[data-portal-mode="admin"].app-active .admin-equipment-form {
+  display: grid;
+  gap: 14px;
+}
+
+body[data-portal-mode="admin"].app-active .admin-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+body[data-portal-mode="admin"].app-active .admin-equipment-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--text-soft);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+body[data-portal-mode="admin"].app-active .admin-image-preview {
+  border: 1px dashed rgba(139, 92, 246, .35);
+  border-radius: 18px;
+  background: rgba(139, 92, 246, .06);
+}
+
+body[data-portal-mode="admin"].app-active .admin-equipment-card-grid {
+  grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+}
+
+body[data-portal-mode="admin"].app-active .admin-equipment-card {
+  overflow: hidden;
+}
+
+body[data-portal-mode="admin"].app-active .admin-equipment-card-body {
+  padding: 18px;
+}
+
+body[data-portal-mode="admin"].app-active .category-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-bottom: 22px;
+}
+
+body[data-portal-mode="admin"].app-active .settings-grid,
+body[data-portal-mode="admin"].app-active .analytics-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}

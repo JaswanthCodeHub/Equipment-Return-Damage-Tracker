@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+env/
+.env
+*.log
+
+# Local runtime data and visual test artifacts
+data/*.db
+data/*.db-*
+test-results/

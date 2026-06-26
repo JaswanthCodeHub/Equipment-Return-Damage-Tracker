@@ -1,0 +1,583 @@
+body.app-active .brand,
+body.app-active .sidebar-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+body.app-active .brand-mark,
+body.app-active .avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 16px;
+  color: #FFFFFF;
+  font-weight: 800;
+  background: var(--gradient);
+  box-shadow: 0 16px 32px rgba(139, 92, 246, .22);
+}
+
+body.app-active .brand strong,
+body.app-active .sidebar-foot strong {
+  color: var(--text);
+  font-weight: 800;
+}
+
+body.app-active .brand small,
+body.app-active .sidebar-foot small {
+  color: var(--text-soft);
+}
+
+body.app-active .nav-item {
+  width: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--text-soft);
+  background: transparent;
+  font-weight: 750;
+  text-align: left;
+  transition: all .3s ease;
+}
+
+body.app-active .nav-item:hover {
+  color: var(--text);
+  background: rgba(248, 250, 252, .9);
+  border-color: var(--border);
+  transform: translateY(-2px);
+}
+
+body.app-active .nav-item.active {
+  color: #FFFFFF;
+  border-color: transparent;
+  background: var(--gradient);
+  box-shadow: 0 18px 38px rgba(139, 92, 246, .22);
+}
+
+body.app-active .nav-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+}
+
+body.app-active .nav-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.2;
+}
+
+body.app-active .nav-fallback {
+  display: none !important;
+  color: currentColor;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+body.app-active .nav-icon svg ~ .nav-fallback {
+  display: none;
+}
+
+body.app-active .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+  padding: 22px 24px;
+  border: 1px solid rgba(229, 231, 235, .86);
+  border-radius: var(--radius);
+  color: var(--text);
+  background: rgba(255, 255, 255, .82);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+body.app-active .topbar h1 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(26px, 3vw, 38px);
+}
+
+body.app-active .topbar .muted {
+  margin: 6px 0 0;
+  max-width: 740px;
+}
+
+body.app-active .hero-panel {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+  padding: 30px;
+  border: 1px solid rgba(229, 231, 235, .82);
+  border-radius: var(--radius);
+  color: var(--text);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .96), rgba(255, 255, 255, .78)),
+    var(--soft-gradient);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+body.app-active .hero-panel::after {
+  content: "";
+  position: absolute;
+  right: -7rem;
+  top: -8rem;
+  width: 22rem;
+  height: 22rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(236, 72, 153, .16), transparent 62%);
+}
+
+body.app-active .hero-panel .eyebrow {
+  color: var(--primary);
+}
+
+body.app-active .hero-panel h2 {
+  margin: 0 0 10px;
+  font-size: clamp(25px, 3vw, 42px);
+}
+
+body.app-active .hero-panel p:not(.eyebrow) {
+  max-width: 720px;
+  color: var(--text-soft);
+  line-height: 1.7;
+}
+
+body.app-active .hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+body.app-active .primary,
+body.app-active .ghost,
+body.app-active .danger,
+body.app-active .small-btn,
+body.app-active .link-btn {
+  border-radius: var(--radius);
+  transition: all .3s ease;
+}
+
+body.app-active .primary {
+  color: #FFFFFF;
+  border: 0;
+  background: var(--gradient);
+  box-shadow: 0 16px 32px rgba(139, 92, 246, .22);
+}
+
+body.app-active .primary:hover,
+body.app-active .ghost:hover,
+body.app-active .small-btn:hover {
+  transform: translateY(-4px);
+}
+
+body.app-active .primary:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+body.app-active .ghost,
+body.app-active .small-btn.secondary {
+  color: var(--text);
+  border: 1px solid var(--border);
+  background: #FFFFFF;
+}
+
+body.app-active .small-btn {
+  color: var(--primary);
+  border: 1px solid rgba(139, 92, 246, .18);
+  background: rgba(139, 92, 246, .08);
+}
+
+body.app-active .small-btn.danger,
+body.app-active .danger {
+  color: #FFFFFF;
+  background: linear-gradient(135deg, var(--danger), #F97316);
+}
+
+body.app-active .summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+body.app-active .summary-card,
+body.app-active .panel,
+body.app-active .equipment-card,
+body.app-active .admin-equipment-panel,
+body.app-active .admin-equipment-card {
+  color: var(--text);
+  border: 1px solid rgba(229, 231, 235, .84);
+  border-radius: var(--radius);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow);
+}
+
+body.app-active .summary-card,
+body.app-active .equipment-card,
+body.app-active .panel {
+  transition: all .3s ease;
+}
+
+body.app-active .summary-card:hover,
+body.app-active .equipment-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+
+body.app-active .summary-card {
+  min-height: 124px;
+  padding: 22px;
+}
+
+body.app-active .summary-icon {
+  background: rgba(139, 92, 246, .11);
+  color: var(--primary);
+}
+
+body.app-active .summary-icon.green { background: rgba(34, 197, 94, .12); color: var(--success); }
+body.app-active .summary-icon.amber { background: rgba(245, 158, 11, .13); color: var(--warning); }
+body.app-active .summary-icon.red { background: rgba(239, 68, 68, .12); color: var(--danger); }
+
+body.app-active .summary-card small,
+body.app-active .panel small {
+  color: var(--text-soft);
+}
+
+body.app-active .summary-card strong {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 28px;
+}
+
+body.app-active .panel {
+  overflow: hidden;
+}
+
+body.app-active .panel-head,
+body.app-active .admin-panel-head {
+  color: var(--text);
+}
+
+body.app-active .panel-head h2,
+body.app-active .admin-panel-head h2 {
+  color: var(--text);
+}
+
+body.app-active .admin-panel-head span,
+body.app-active .admin-equipment-card-body > small {
+  color: var(--primary);
+}
+
+body.app-active .table-wrap {
+  background: #FFFFFF;
+}
+
+body.app-active table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+body.app-active th {
+  color: var(--text-soft);
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  letter-spacing: .08em;
+}
+
+body.app-active td {
+  color: var(--text);
+  border-bottom: 1px solid rgba(229, 231, 235, .72);
+}
+
+body.app-active tr:hover td {
+  background: rgba(248, 250, 252, .76);
+}
+
+body.app-active td small {
+  color: var(--text-soft);
+}
+
+body.app-active .badge {
+  border-radius: 999px;
+  font-weight: 800;
+  border: 1px solid transparent;
+}
+
+body.app-active .badge.pending,
+body.app-active .badge.inspection,
+body.app-active .badge.claim_pending {
+  color: #92400E;
+  background: #FFFBEB;
+  border-color: rgba(245, 158, 11, .22);
+}
+
+body.app-active .badge.approved,
+body.app-active .badge.active,
+body.app-active .badge.available,
+body.app-active .badge.closed,
+body.app-active .badge.returned,
+body.app-active .badge.settled {
+  color: #166534;
+  background: #F0FDF4;
+  border-color: rgba(34, 197, 94, .22);
+}
+
+body.app-active .badge.overdue,
+body.app-active .badge.rejected,
+body.app-active .badge.damaged,
+body.app-active .badge.lost {
+  color: #991B1B;
+  background: #FEF2F2;
+  border-color: rgba(239, 68, 68, .20);
+}
+
+body.app-active .badge.return_requested,
+body.app-active .badge.fair,
+body.app-active .badge.good,
+body.app-active .badge.excellent {
+  color: #6D28D9;
+  background: rgba(139, 92, 246, .10);
+  border-color: rgba(139, 92, 246, .16);
+}
+
+body.app-active .badge.cancelled,
+body.app-active .badge.retired,
+body.app-active .badge.maintenance,
+body.app-active .badge.disabled,
+body.app-active .badge.settlement_pending {
+  color: #374151;
+  background: #F3F4F6;
+  border-color: var(--border);
+}
+
+body.app-active input,
+body.app-active select,
+body.app-active textarea {
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #FFFFFF;
+  outline: none;
+  transition: all .25s ease;
+}
+
+body.app-active input:focus,
+body.app-active select:focus,
+body.app-active textarea:focus {
+  border-color: rgba(139, 92, 246, .58);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, .12);
+}
+
+body.app-active .equipment-grid,
+body.app-active .admin-equipment-card-grid,
+body.app-active .category-grid,
+body.app-active .settings-grid,
+body.app-active .analytics-grid {
+  display: grid;
+  gap: 20px;
+}
+
+body.app-active .equipment-card {
+  padding: 20px;
+  overflow: hidden;
+}
+
+body.app-active .equipment-card::before {
+  background: var(--soft-gradient);
+}
+
+body.app-active .equipment-visual,
+body.app-active .admin-equipment-visual {
+  color: #FFFFFF;
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(17, 24, 39, .10), rgba(17, 24, 39, .04)),
+    var(--gradient);
+}
+
+body.app-active .equipment-visual.has-image,
+body.app-active .admin-equipment-visual.has-image {
+  background: #F3F4F6;
+}
+
+body.app-active .equipment-meta span,
+body.app-active .admin-equipment-stats span,
+body.app-active .detail-grid > div,
+body.app-active .notice,
+body.app-active .metric-line {
+  border-color: rgba(229, 231, 235, .82);
+  background: rgba(248, 250, 252, .82);
+}
+
+body.app-active .content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(300px, .8fr);
+  gap: 20px;
+}
+
+body.app-active .side-panel {
+  padding: 24px;
+}
+
+body.app-active .toolbar,
+body.app-active .catalogue-toolbar {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) repeat(2, minmax(180px, 240px));
+  gap: 14px;
+  margin-bottom: 20px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, .88);
+  box-shadow: var(--shadow);
+}
+
+body.app-active .catalogue-toolbar {
+  grid-template-columns: 1fr;
+}
+
+body.app-active .toolbar label,
+body.app-active .catalogue-toolbar label {
+  display: grid;
+  gap: 8px;
+  color: var(--text-soft);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+body.app-active .category-card,
+body.app-active .settings-card,
+body.app-active .chart-panel {
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #FFFFFF;
+  box-shadow: var(--shadow);
+}
+
+body.app-active .category-card h3,
+body.app-active .settings-card h3,
+body.app-active .chart-panel h3 {
+  margin: 0 0 10px;
+}
+
+body.app-active .category-card strong {
+  display: block;
+  margin-top: 14px;
+  font-size: 30px;
+  font-family: var(--font-display);
+}
+
+body.app-active .chart-bars {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+body.app-active .chart-row {
+  display: grid;
+  grid-template-columns: 150px 1fr 80px;
+  align-items: center;
+  gap: 14px;
+  color: var(--text-soft);
+  font-weight: 700;
+}
+
+body.app-active .chart-track {
+  height: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #F3F4F6;
+}
+
+body.app-active .chart-fill {
+  display: block;
+  height: 100%;
+  min-width: 8px;
+  border-radius: inherit;
+  background: var(--gradient);
+}
+
+body.app-active .toggle-list {
+  display: grid;
+  gap: 12px;
+}
+
+body.app-active .toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+body.app-active .toggle-row:last-child {
+  border-bottom: 0;
+}
+
+body.app-active .switch {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(139, 92, 246, .20);
+}
+
+body.app-active .switch::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--gradient);
+}
+
+body.app-active dialog {
+  border: 0;
+  border-radius: var(--radius);
+  background: #FFFFFF;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, .22);
+}
+
+body.app-active dialog::backdrop {
+  background: rgba(17, 24, 39, .32);
+  backdrop-filter: blur(8px);
+}
+
+body.app-active .modal-head {
+  border-bottom: 1px solid var(--border);
+}
+
+body.app-active .toast {
+  color: #FFFFFF;
+  border-radius: 18px;
+  background: var(--gradient);
+  box-shadow: var(--shadow-hover);
+}
+
+body.app-active .toast.error {
+  background: linear-gradient(135deg, var(--danger), var(--accent));
+}

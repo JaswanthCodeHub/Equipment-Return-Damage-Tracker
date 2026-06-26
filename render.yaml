@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: equipment-return-damage-tracker
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn backend.app:app
+    healthCheckPath: /api/health
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: TRACKER_DB
+        value: /var/data/equipment_tracker.db
+    disk:
+      name: tracker-data
+      mountPath: /var/data
+      sizeGB: 1

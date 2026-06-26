@@ -1,0 +1,88 @@
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes softScale {
+  from {
+    opacity: 0;
+    transform: scale(.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+body.app-active .topbar,
+body.app-active .hero-panel,
+body.app-active .summary-card,
+body.app-active .panel,
+body.app-active .equipment-card,
+body.app-active .admin-equipment-panel,
+body.app-active .category-card,
+body.app-active .settings-card,
+body.app-active .chart-panel {
+  animation: fadeUp .45s ease both;
+}
+
+body.app-active .summary-card:nth-child(2),
+body.app-active .equipment-card:nth-child(2) {
+  animation-delay: .05s;
+}
+
+body.app-active .summary-card:nth-child(3),
+body.app-active .equipment-card:nth-child(3) {
+  animation-delay: .1s;
+}
+
+body.app-active .summary-card:nth-child(4),
+body.app-active .equipment-card:nth-child(4) {
+  animation-delay: .15s;
+}
+
+body.app-active dialog[open] {
+  animation: softScale .22s ease both;
+}
+
+body.app-active button {
+  position: relative;
+  overflow: hidden;
+}
+
+body.app-active button::after {
+  content: "";
+  position: absolute;
+  inset: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .38);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: width .45s ease, height .45s ease, opacity .45s ease;
+}
+
+body.app-active button:active::after {
+  width: 220px;
+  height: 220px;
+  opacity: 1;
+  transition: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.app-active *,
+  body.app-active *::before,
+  body.app-active *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}

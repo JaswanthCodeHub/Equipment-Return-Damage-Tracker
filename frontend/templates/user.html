@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>User Panel | Equipment Return & Damage Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css', v='reference-login-1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='normal-text-1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='components.css', v='normal-text-1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='admin.css', v='normal-text-1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='user.css', v='normal-text-1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='animations.css', v='normal-text-1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='responsive.css', v='normal-text-1') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='professional-theme.css', v='white-blue-2') }}">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+
+<body data-portal-mode="user">
+  <canvas id="webgl-background" aria-hidden="true"></canvas>
+  <section class="login-page hidden" id="loginPage">
+    <div class="login-brand">
+      <span class="brand-mark">SD</span>
+      <div><strong>SD Digitals</strong><small id="brandSubtitle">Customer rental portal</small></div>
+    </div>
+    <div class="login-layout">
+      <div class="login-copy">
+        <p class="eyebrow" id="loginEyebrow">RENTAL MANAGEMENT</p>
+        <h1 id="loginHeadline">User panel for bookings, rentals, and returns.</h1>
+        <p id="loginDescription">Sign in to book equipment, track rental status, request returns, and manage your customer account.</p>
+        <div class="feature-row"><span>01</span>
+          <div><b id="featureOneTitle">Book and manage rentals</b><small id="featureOneCopy">Browse available gear, place rental requests, and follow approval status.</small></div>
+        </div>
+        <div class="feature-row"><span>02</span>
+          <div><b id="featureTwoTitle">Returns and account access</b><small id="featureTwoCopy">Request returns, review rental history, reset passwords, and update profile details.</small></div>
+        </div>
+      </div>
+      <div class="login-card">
+        <p class="eyebrow" id="accessEyebrow">USER ACCESS</p>
+        <h2 id="authTitle">Welcome back</h2>
+        <p class="muted" id="authSubtitle">Enter your account details to continue.</p>
+
+        <form id="loginForm" class="auth-form" autocomplete="off" style="margin-top: 30px;">
+          <label id="loginIdentifierLabel" style="font-weight: 700; color: #182230;"><span id="loginIdentifierText">Email or Phone number</span>
+            <input type="text" id="loginIdentifierInput" name="email" placeholder="name@example.com or +91 00000 00000" required autocomplete="off" autocapitalize="none" spellcheck="false" style="margin-top: 8px;">
+          </label>
+
+          <label style="font-weight: 700; color: #182230;">Password
+            <span class="password-field" style="margin-top: 8px;">
+              <input type="password" name="password" placeholder="Enter password" required autocomplete="new-password">
+              <button type="button" data-toggle-password="loginForm" style="background: none; border: none; padding: 0; right: 15px; color: #98a2b3;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              </button>
+            </span>
+          </label>
+
+          <button class="primary full" type="submit" style="margin-top: 10px; border-radius: 10px; padding: 14px; font-size: 15px; font-weight: 700;">Sign in</button>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+            <button class="link-btn" type="button" id="forgotPasswordLink" style="font-weight: 600; font-size: 13px;">Forgot password?</button>
+            <button class="link-btn" type="button" id="showRegister" style="font-weight: 600; font-size: 13px;">Create an account</button>
+          </div>
+        </form>
+
+        <form id="createAccountForm" class="auth-form hidden">
+          <label>Full name<input name="name" placeholder="Your full name" required maxlength="100"></label>
+          <label>Phone number<input name="phone" placeholder="+91 98765 43210" maxlength="30"></label>
+          <label>Email address<input type="email" name="email" placeholder="you@example.com" required maxlength="120"></label>
+          <label>Password
+            <span class="password-field">
+              <input type="password" name="password" placeholder="Minimum 6 characters" required minlength="6">
+              <button type="button" data-toggle-password="createAccountForm">Show</button>
+            </span>
+          </label>
+          <label>Confirm password
+            <span class="password-field">
+              <input type="password" name="confirm_password" placeholder="Repeat password" required minlength="6">
+              <button type="button" data-toggle-password="createAccountForm">Show</button>
+            </span>
+          </label>
+          <button class="primary full" type="submit">Create account</button>
+          <div style="text-align: center; margin-top: 15px;">
+            <button class="link-btn" type="button" id="backToLoginFromRegister" style="font-weight: 600; font-size: 13px;">Back to Sign in</button>
+          </div>
+        </form>
+
+        <form id="forgotPasswordForm" class="auth-form hidden">
+          <div class="forgot-step" id="forgotEmailFields">
+            <label>Email address<input type="email" name="email" placeholder="your.account@example.com" required
+                maxlength="120" autocomplete="email" autocapitalize="none" spellcheck="false"></label>
+            <button class="primary full" type="button" id="sendOtpBtn">Send OTP</button>
+          </div>
+          <p class="reset-help hidden" id="otpHelp">Enter the OTP sent to your email, then choose a new password.</p>
+          <div class="forgot-step reset-after-otp hidden" id="verifyOtpFields" style="display: flex; flex-direction: column; gap: 16px;">
+            <label>OTP code<input name="otp" placeholder="6 digit OTP" maxlength="6" required inputmode="numeric"
+                autocomplete="one-time-code"></label>
+            <button class="primary full" type="button" id="verifyOtpBtn">Verify OTP</button>
+          </div>
+          <div class="forgot-step reset-after-otp hidden" id="setPasswordFields" style="display: flex; flex-direction: column; gap: 16px;">
+            <label>New password
+              <span class="password-field">
+                <input type="password" name="password" placeholder="Minimum 6 characters" required minlength="6">
+                <button type="button" data-toggle-password="forgotPasswordForm">Show</button>
+              </span>
+            </label>
+            <label>Confirm new password
+              <span class="password-field">
+                <input type="password" name="confirm_password" placeholder="Repeat new password" required minlength="6">
+                <button type="button" data-toggle-password="forgotPasswordForm">Show</button>
+              </span>
+            </label>
+            <button class="primary full" type="submit">Reset password</button>
+          </div>
+          <div style="text-align: center; margin-top: 15px;" id="forgotPasswordBackContainer">
+            <button class="link-btn" type="button" id="backToLoginFromForgot" style="font-weight: 600; font-size: 13px;">Back to Sign in</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <canvas id="webgl-dashboard" class="hidden" aria-hidden="true"></canvas>
+  <section class="app-shell hidden" id="appShell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">SD</span>
+        <div><strong>SD Digitals</strong><small id="portalName">Customer rental portal</small></div>
+      </div>
+      <nav id="navigation"></nav>
+      <div class="sidebar-foot">
+        <span class="avatar" id="userInitials">U</span>
+        <div><strong id="sidebarName">User</strong><small id="sidebarRole">Customer</small></div>
+        <button id="logoutBtn" title="Log out">Log out</button>
+      </div>
+    </aside>
+    <main>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" id="pageEyebrow">PORTAL</p>
+          <h1 id="pageTitle">Dashboard</h1>
+          <p id="pageSubtitle" class="muted"></p>
+        </div>
+        <div id="headerAction"></div>
+      </header>
+      <div id="pageContent">
+        <div class="loading">Loading workspace...</div>
+      </div>
+    </main>
+  </section>
+
+  <dialog id="modal">
+    <div id="modalContent"></div>
+  </dialog>
+  <div class="toast" id="toast"></div>
+  <script type="module" src="{{ url_for('static', filename='cinematic-background.js') }}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="{{ url_for('static', filename='app.js', v='clean-icons-white-card-1') }}"></script>
+</body>
+
+</html>

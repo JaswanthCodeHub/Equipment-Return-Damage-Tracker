@@ -1,0 +1,79 @@
+body[data-portal-mode="user"].app-active .app-shell {
+  display: grid;
+  grid-template-columns: 286px minmax(0, 1fr);
+}
+
+body[data-portal-mode="user"].app-active .sidebar {
+  position: sticky;
+  top: 0;
+  width: 286px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px;
+  border-right: 1px solid rgba(229, 231, 235, .86);
+  background: rgba(255, 255, 255, .90);
+  box-shadow: 18px 0 45px rgba(15, 23, 42, .05);
+  backdrop-filter: blur(18px);
+}
+
+body[data-portal-mode="user"].app-active .sidebar .brand {
+  flex: 0 0 auto;
+}
+
+body[data-portal-mode="user"].app-active .sidebar nav {
+  display: grid;
+  gap: 8px;
+  margin-top: 30px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+body[data-portal-mode="user"].app-active .nav-item {
+  width: 100%;
+  white-space: normal;
+}
+
+body[data-portal-mode="user"].app-active .sidebar-foot {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+
+body[data-portal-mode="user"].app-active #logoutBtn {
+  color: var(--text-soft);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #FFFFFF;
+}
+
+body[data-portal-mode="user"].app-active main {
+  margin-left: 0 !important;
+  padding: 30px;
+}
+
+body[data-portal-mode="user"].app-active .topbar,
+body[data-portal-mode="user"].app-active #pageContent {
+  max-width: none;
+}
+
+body[data-portal-mode="user"].app-active .equipment-grid {
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+}
+
+body[data-portal-mode="user"].app-active .equipment-card {
+  min-height: 100%;
+}
+
+body[data-portal-mode="user"].app-active .equipment-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+body[data-portal-mode="user"].app-active .equipment-meta span {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 16px;
+}

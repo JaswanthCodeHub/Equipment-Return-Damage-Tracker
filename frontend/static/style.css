@@ -1,0 +1,203 @@
+:root {
+  --primary: #8B5CF6;
+  --secondary: #EC4899;
+  --accent: #F97316;
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --background: #FFFFFF;
+  --section-bg: #F8FAFC;
+  --border: #E5E7EB;
+  --text: #111827;
+  --text-soft: #6B7280;
+  --text-faint: #9CA3AF;
+  --surface: rgba(255, 255, 255, .84);
+  --surface-strong: rgba(255, 255, 255, .96);
+  --radius: 20px;
+  --radius-sm: 14px;
+  --shadow: 0 10px 35px rgba(15, 23, 42, .08);
+  --shadow-hover: 0 22px 55px rgba(139, 92, 246, .18);
+  --gradient: linear-gradient(135deg, #8B5CF6 0%, #EC4899 52%, #F97316 100%);
+  --soft-gradient: linear-gradient(135deg, rgba(139, 92, 246, .11), rgba(236, 72, 153, .09), rgba(249, 115, 22, .11));
+  --font-main: "Inter", "Poppins", "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: "Poppins", "Inter", "Manrope", system-ui, sans-serif;
+}
+
+html:has(body.app-active),
+body.app-active {
+  background: var(--background) !important;
+}
+
+body.app-active {
+  color: var(--text);
+  font-family: var(--font-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body.app-active #webgl-dashboard,
+body.app-active #webgl-background.hidden {
+  display: none !important;
+}
+
+body.app-active .app-shell {
+  position: relative;
+  min-height: 100vh;
+  color: var(--text);
+  background:
+    linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 36%, #F8FAFC 100%),
+    var(--background);
+}
+
+body.app-active .app-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 16% 10%, rgba(139, 92, 246, .12), transparent 28rem),
+    radial-gradient(circle at 82% 18%, rgba(236, 72, 153, .10), transparent 24rem),
+    radial-gradient(circle at 76% 82%, rgba(249, 115, 22, .10), transparent 26rem);
+}
+
+body.app-active .sidebar,
+body.app-active main {
+  position: relative;
+  z-index: 1;
+}
+
+body.app-active main {
+  min-width: 0;
+  min-height: 100vh;
+  color: var(--text);
+}
+
+body.app-active h1,
+body.app-active h2,
+body.app-active h3,
+body.app-active h4 {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+body.app-active p,
+body.app-active small,
+body.app-active span,
+body.app-active td,
+body.app-active th,
+body.app-active label {
+  letter-spacing: 0;
+}
+
+body.app-active .muted {
+  color: var(--text-soft) !important;
+}
+
+body.app-active .eyebrow {
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+body.app-active ::selection {
+  color: inherit;
+  background: transparent;
+  text-shadow: none;
+}
+
+body.app-active .app-shell,
+body.app-active .app-shell * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+body.app-active input,
+body.app-active textarea,
+body.app-active select {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+body.app-active input::selection,
+body.app-active textarea::selection,
+body.app-active select::selection {
+  color: inherit;
+  background: transparent;
+}
+
+.login-page .login-card {
+  color: var(--text) !important;
+  border: 1px solid rgba(229, 231, 235, .88) !important;
+  background: rgba(255, 255, 255, .94) !important;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, .18) !important;
+  backdrop-filter: blur(18px);
+}
+
+.login-page .login-card::before {
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, .28), rgba(236, 72, 153, .24), transparent) !important;
+}
+
+.login-page .login-card h2 {
+  color: var(--text) !important;
+}
+
+.login-page .login-card .muted {
+  color: var(--text-soft) !important;
+}
+
+.login-page .login-card .eyebrow {
+  color: var(--primary) !important;
+}
+
+.login-page .login-card label,
+.login-page .login-card label[style],
+.login-page .login-card .field {
+  color: var(--text) !important;
+}
+
+.login-page .login-card input,
+.login-page .login-card select,
+.login-page .login-card textarea {
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+  background: #FFFFFF !important;
+  box-shadow: inset 0 1px 0 rgba(15, 23, 42, .03) !important;
+}
+
+.login-page .login-card input::placeholder,
+.login-page .login-card textarea::placeholder {
+  color: var(--text-faint) !important;
+}
+
+.login-page .login-card input:focus,
+.login-page .login-card select:focus,
+.login-page .login-card textarea:focus {
+  border-color: rgba(139, 92, 246, .62) !important;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, .12) !important;
+}
+
+.login-page .login-card .password-field button {
+  color: var(--primary) !important;
+  background: rgba(139, 92, 246, .10) !important;
+}
+
+.login-page .login-card .password-field button:hover {
+  background: rgba(236, 72, 153, .12) !important;
+}
+
+.login-page .login-card .primary {
+  background: var(--gradient) !important;
+  box-shadow: 0 18px 36px rgba(139, 92, 246, .24) !important;
+}
+
+.login-page .login-card .link-btn {
+  color: var(--primary) !important;
+}
+
+.login-page .login-card .link-btn:hover {
+  color: var(--secondary) !important;
+}
