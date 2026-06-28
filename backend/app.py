@@ -160,7 +160,7 @@ def create_app(test_config: dict | None = None) -> Flask:
                 ("CAM-210", "Canon EOS R6 Mark II", "Camera", "https://img.sanishtech.com/u/0d8884127f2719bb117b75190796e3b5.png", "Full-frame mirrorless camera", 2800, 32000, 2, 2),
                 ("LEN-208", "Canon RF 70-200mm", "Lens", "https://img.sanishtech.com/u/755e7618114c6b325c14b22ae7369cd8.png", "Professional telephoto zoom lens", 1400, 18000, 3, 3),
                 ("GIM-312", "DJI RS 4 Pro", "Gimbal", "https://img.sanishtech.com/u/afe2af4e797933cc83a950c8bc28a122.png", "Cinema camera stabilizer", 1200, 15000, 2, 2),
-                ("AUD-118", "Rode Wireless PRO", "Audio", "https://img.sanishtech.com/u/2c110c2fe38c8527e4fe78ca74265408.png", "Dual-channel wireless microphone", 850, 10000, 4, 4),
+                ("AUD-118", "Rode Wireless PRO", "Audio", "https://img.sanishtech.com/u/43e091aacefff4f2fd317e373bf79cc7.png", "Dual-channel wireless microphone", 850, 10000, 4, 4),
                 ("LGT-410", "Aputure 300D II", "Lighting", "https://img.sanishtech.com/u/062eff6a077389025fe08b8b5635bb73.png", "Daylight LED studio light", 1100, 14000, 2, 2),
             ]
             db.executemany(
