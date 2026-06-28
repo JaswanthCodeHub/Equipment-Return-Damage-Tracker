@@ -104,29 +104,8 @@ body.app-active .eyebrow {
 }
 
 body.app-active ::selection {
-  color: inherit;
-  background: transparent;
-  text-shadow: none;
-}
-
-body.app-active .app-shell,
-body.app-active .app-shell * {
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-body.app-active input,
-body.app-active textarea,
-body.app-active select {
-  -webkit-user-select: text;
-  user-select: text;
-}
-
-body.app-active input::selection,
-body.app-active textarea::selection,
-body.app-active select::selection {
-  color: inherit;
-  background: transparent;
+  color: #FFFFFF;
+  background: rgba(139, 92, 246, 0.58);
 }
 
 .login-page .login-card {
