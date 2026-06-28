@@ -77,7 +77,7 @@ def load_env_file() -> None:
 load_env_file()
 
 
-# PostgreSQL Drop-in Wrapper for SQLite compatibility
+# PostgreSQL Drop-in Wrapper for SQLite compatibility using pure-Python pg8000
 class PostgresRow:
     def __init__(self, row_dict):
         self._dict = row_dict
@@ -111,7 +111,7 @@ class PostgresCursorWrapper:
             try:
                 row = self.cur.fetchone()
                 if row:
-                    self._lastrowid = list(row.values())[0]
+                    self._lastrowid = row[0]
             except Exception:
                 pass
         else:
@@ -129,15 +129,21 @@ class PostgresCursorWrapper:
         self.cur.executemany(sql, seq_of_parameters)
         return self
 
-    def fetchone(self):
-        row = self.cur.fetchone()
+    def _convert_row(self, row):
         if row is None:
             return None
-        return PostgresRow(dict(row))
+        cols = [col[0] for col in self.cur.description]
+        row_dict = dict(zip(cols, row))
+        return PostgresRow(row_dict)
+
+    def fetchone(self):
+        row = self.cur.fetchone()
+        return self._convert_row(row)
 
     def fetchall(self):
         rows = self.cur.fetchall()
-        return [PostgresRow(dict(row)) for row in rows]
+        cols = [col[0] for col in self.cur.description]
+        return [PostgresRow(dict(zip(cols, row))) for row in rows]
 
     @property
     def rowcount(self):
@@ -152,8 +158,7 @@ class PostgresConnectionWrapper:
         self.conn = conn
 
     def cursor(self):
-        from psycopg2.extras import RealDictCursor
-        cur = self.conn.cursor(cursor_factory=RealDictCursor)
+        cur = self.conn.cursor()
         return PostgresCursorWrapper(cur)
 
     def execute(self, sql, params=None):
@@ -221,11 +226,22 @@ def create_app(test_config: dict | None = None) -> Flask:
     def get_db():
         if "db" not in g:
             if is_postgres:
-                import psycopg2
+                import pg8000.dbapi
                 url = db_conn_str
-                if url.startswith("postgres://"):
-                    url = url.replace("postgres://", "postgresql://", 1)
-                conn = psycopg2.connect(url)
+                result = urlparse(url)
+                username = result.username
+                password = unquote(result.password or "")
+                database = result.path[1:]
+                hostname = result.hostname
+                port = result.port or 5432
+                conn = pg8000.dbapi.connect(
+                    user=username,
+                    password=password,
+                    host=hostname,
+                    port=port,
+                    database=database,
+                    ssl_context=True
+                )
                 g.db = PostgresConnectionWrapper(conn)
             else:
                 g.db = sqlite3.connect(app.config["DATABASE"])
