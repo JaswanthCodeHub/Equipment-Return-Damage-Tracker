@@ -156,12 +156,12 @@ def create_app(test_config: dict | None = None) -> Flask:
         db.execute("UPDATE users SET name=?, updated_at=? WHERE lower(email)=?", ("Rahul", now(), "user@sd-digitals.com"))
         if db.execute("SELECT COUNT(*) FROM equipment").fetchone()[0] == 0:
             inventory = [
-                ("CAM-104", "Sony A7 IV", "Camera", "", "33 MP full-frame hybrid camera", 2500, 30000, 2, 2),
-                ("CAM-210", "Canon EOS R6 Mark II", "Camera", "", "Full-frame mirrorless camera", 2800, 32000, 2, 2),
-                ("LEN-208", "Canon RF 70-200mm", "Lens", "", "Professional telephoto zoom lens", 1400, 18000, 3, 3),
-                ("GIM-312", "DJI RS 4 Pro", "Gimbal", "", "Cinema camera stabilizer", 1200, 15000, 2, 2),
-                ("AUD-118", "Rode Wireless PRO", "Audio", "", "Dual-channel wireless microphone", 850, 10000, 4, 4),
-                ("LGT-410", "Aputure 300D II", "Lighting", "", "Daylight LED studio light", 1100, 14000, 2, 2),
+                ("CAM-104", "Sony A7 IV", "Camera", "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1000&q=80", "33 MP full-frame hybrid camera", 2500, 30000, 2, 2),
+                ("CAM-210", "Canon EOS R6 Mark II", "Camera", "https://www.eos-magazine.com/system/cameras/mirrorless/images/canon-eos-r6-mark-ii/Canon-EOS-r6-mark-ii_camera_social.jpg", "Full-frame mirrorless camera", 2800, 32000, 2, 2),
+                ("LEN-208", "Canon RF 70-200mm", "Lens", "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=1000&q=80", "Professional telephoto zoom lens", 1400, 18000, 3, 3),
+                ("GIM-312", "DJI RS 4 Pro", "Gimbal", "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1000&q=80", "Cinema camera stabilizer", 1200, 15000, 2, 2),
+                ("AUD-118", "Rode Wireless PRO", "Audio", "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&w=1000&q=80", "Dual-channel wireless microphone", 850, 10000, 4, 4),
+                ("LGT-410", "Aputure 300D II", "Lighting", "https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1000&q=80", "Daylight LED studio light", 1100, 14000, 2, 2),
             ]
             db.executemany(
                 "INSERT INTO equipment (code,name,category,image_url,description,daily_rate,deposit_amount,stock_total,stock_available,condition,status,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?, 'excellent','available',?,?)",
