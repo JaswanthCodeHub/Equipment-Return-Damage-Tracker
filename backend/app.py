@@ -96,6 +96,8 @@ class PostgresCursorWrapper:
         self._lastrowid = None
 
     def execute(self, sql, params=None):
+        if params is None:
+            params = ()
         sql = sql.replace("?", "%s")
         if "INSERT OR IGNORE INTO users" in sql:
             sql = sql.replace("INSERT OR IGNORE INTO users", "INSERT INTO users")
@@ -105,7 +107,8 @@ class PostgresCursorWrapper:
             sql += " ON CONFLICT (key) DO NOTHING"
         
         is_insert = sql.strip().upper().startswith("INSERT INTO")
-        if is_insert and "RETURNING" not in sql.upper():
+        skip_returning = "app_settings" in sql or "ON CONFLICT" in sql
+        if is_insert and "RETURNING" not in sql.upper() and not skip_returning:
             sql += " RETURNING id"
             self.cur.execute(sql, params)
             try:
@@ -126,7 +129,8 @@ class PostgresCursorWrapper:
         elif "INSERT OR IGNORE INTO app_settings" in sql:
             sql = sql.replace("INSERT OR IGNORE INTO app_settings", "INSERT INTO app_settings")
             sql += " ON CONFLICT (key) DO NOTHING"
-        self.cur.executemany(sql, seq_of_parameters)
+        for params in seq_of_parameters:
+            self.cur.execute(sql, params)
         return self
 
     def _convert_row(self, row):
@@ -164,6 +168,11 @@ class PostgresConnectionWrapper:
     def execute(self, sql, params=None):
         cur = self.cursor()
         cur.execute(sql, params)
+        return cur
+
+    def executemany(self, sql, seq_of_parameters):
+        cur = self.cursor()
+        cur.executemany(sql, seq_of_parameters)
         return cur
 
     def executescript(self, sql_script):
@@ -256,13 +265,35 @@ def create_app(test_config: dict | None = None) -> Flask:
             db.close()
 
     def add_missing_column(table: str, column: str, definition: str) -> None:
-        columns = {row["name"] for row in get_db().execute(f"PRAGMA table_info({table})")}
-        if column not in columns:
-            get_db().execute(f"ALTER TABLE {table} ADD COLUMN {column} {definition}")
+        if is_postgres:
+            row = get_db().execute(
+                "SELECT column_name FROM information_schema.columns WHERE table_name=%s AND column_name=%s",
+                (table, column)
+            ).fetchone()
+            if row is None:
+                get_db().execute(f"ALTER TABLE {table} ADD COLUMN {column} {definition}")
+        else:
+            columns = {row["name"] for row in get_db().execute(f"PRAGMA table_info({table})")}
+            if column not in columns:
+                get_db().execute(f"ALTER TABLE {table} ADD COLUMN {column} {definition}")
 
     def init_db() -> None:
         db = get_db()
-        db.executescript((ROOT / "backend" / "schema.sql").read_text(encoding="utf-8"))
+        if is_postgres:
+            schema_sql = (ROOT / "backend" / "schema.sql").read_text(encoding="utf-8")
+            schema_sql = schema_sql.replace("INTEGER PRIMARY KEY AUTOINCREMENT", "SERIAL PRIMARY KEY")
+            schema_sql = schema_sql.replace("REAL", "DOUBLE PRECISION")
+            for statement in schema_sql.split(";"):
+                statement = statement.strip()
+                if statement and not statement.upper().startswith("PRAGMA"):
+                    try:
+                        db.execute(statement)
+                    except Exception:
+                        db.rollback()
+                        db.execute(statement)
+            db.commit()
+        else:
+            db.executescript((ROOT / "backend" / "schema.sql").read_text(encoding="utf-8"))
         for column, definition in {
             "image_url": "TEXT DEFAULT ''",
         }.items():
