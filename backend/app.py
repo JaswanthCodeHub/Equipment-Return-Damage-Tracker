@@ -77,13 +77,119 @@ def load_env_file() -> None:
 load_env_file()
 
 
+# PostgreSQL Drop-in Wrapper for SQLite compatibility
+class PostgresRow:
+    def __init__(self, row_dict):
+        self._dict = row_dict
+
+    def __getitem__(self, key):
+        if isinstance(key, int):
+            return list(self._dict.values())[key]
+        return self._dict[key]
+
+    def keys(self):
+        return self._dict.keys()
+
+class PostgresCursorWrapper:
+    def __init__(self, cur):
+        self.cur = cur
+        self._lastrowid = None
+
+    def execute(self, sql, params=None):
+        sql = sql.replace("?", "%s")
+        if "INSERT OR IGNORE INTO users" in sql:
+            sql = sql.replace("INSERT OR IGNORE INTO users", "INSERT INTO users")
+            sql += " ON CONFLICT (email) DO NOTHING"
+        elif "INSERT OR IGNORE INTO app_settings" in sql:
+            sql = sql.replace("INSERT OR IGNORE INTO app_settings", "INSERT INTO app_settings")
+            sql += " ON CONFLICT (key) DO NOTHING"
+        
+        is_insert = sql.strip().upper().startswith("INSERT INTO")
+        if is_insert and "RETURNING" not in sql.upper():
+            sql += " RETURNING id"
+            self.cur.execute(sql, params)
+            try:
+                row = self.cur.fetchone()
+                if row:
+                    self._lastrowid = list(row.values())[0]
+            except Exception:
+                pass
+        else:
+            self.cur.execute(sql, params)
+        return self
+
+    def executemany(self, sql, seq_of_parameters):
+        sql = sql.replace("?", "%s")
+        if "INSERT OR IGNORE INTO users" in sql:
+            sql = sql.replace("INSERT OR IGNORE INTO users", "INSERT INTO users")
+            sql += " ON CONFLICT (email) DO NOTHING"
+        elif "INSERT OR IGNORE INTO app_settings" in sql:
+            sql = sql.replace("INSERT OR IGNORE INTO app_settings", "INSERT INTO app_settings")
+            sql += " ON CONFLICT (key) DO NOTHING"
+        self.cur.executemany(sql, seq_of_parameters)
+        return self
+
+    def fetchone(self):
+        row = self.cur.fetchone()
+        if row is None:
+            return None
+        return PostgresRow(dict(row))
+
+    def fetchall(self):
+        rows = self.cur.fetchall()
+        return [PostgresRow(dict(row)) for row in rows]
+
+    @property
+    def rowcount(self):
+        return self.cur.rowcount
+
+    @property
+    def lastrowid(self):
+        return self._lastrowid
+
+class PostgresConnectionWrapper:
+    def __init__(self, conn):
+        self.conn = conn
+
+    def cursor(self):
+        from psycopg2.extras import RealDictCursor
+        cur = self.conn.cursor(cursor_factory=RealDictCursor)
+        return PostgresCursorWrapper(cur)
+
+    def execute(self, sql, params=None):
+        cur = self.cursor()
+        cur.execute(sql, params)
+        return cur
+
+    def executescript(self, sql_script):
+        sql_script = sql_script.replace("INTEGER PRIMARY KEY AUTOINCREMENT", "SERIAL PRIMARY KEY")
+        cur = self.cursor()
+        for statement in sql_script.split(";"):
+            statement = statement.strip()
+            if statement:
+                if statement.upper().startswith("PRAGMA"):
+                    continue
+                cur.execute(statement)
+        self.conn.commit()
+        return cur
+
+    def commit(self):
+        self.conn.commit()
+
+    def rollback(self):
+        self.conn.rollback()
+
+    def close(self):
+        self.conn.close()
+
+
 def create_app(test_config: dict | None = None) -> Flask:
     app = Flask(
         __name__,
         template_folder=str(ROOT / "frontend" / "templates"),
         static_folder=str(ROOT / "frontend" / "static"),
     )
-    db_path = os.environ.get("TRACKER_DB")
+    db_path = os.environ.get("DATABASE_URL") or os.environ.get("TRACKER_DB")
     if not db_path:
         if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
             db_path = "/tmp/equipment_tracker.db"
@@ -98,20 +204,33 @@ def create_app(test_config: dict | None = None) -> Flask:
     )
     if test_config:
         app.config.update(test_config)
-    try:
-        Path(app.config["DATABASE"]).parent.mkdir(parents=True, exist_ok=True)
-    except OSError:
-        app.config["DATABASE"] = "/tmp/equipment_tracker.db"
-        Path(app.config["DATABASE"]).parent.mkdir(parents=True, exist_ok=True)
+    
+    db_conn_str = app.config["DATABASE"]
+    is_postgres = db_conn_str.startswith("postgresql://") or db_conn_str.startswith("postgres://")
+
+    if not is_postgres:
+        try:
+            Path(db_conn_str).parent.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            app.config["DATABASE"] = "/tmp/equipment_tracker.db"
+            Path(app.config["DATABASE"]).parent.mkdir(parents=True, exist_ok=True)
 
     def now() -> str:
         return datetime.now(timezone.utc).isoformat()
 
-    def get_db() -> sqlite3.Connection:
+    def get_db():
         if "db" not in g:
-            g.db = sqlite3.connect(app.config["DATABASE"])
-            g.db.row_factory = sqlite3.Row
-            g.db.execute("PRAGMA foreign_keys = ON")
+            if is_postgres:
+                import psycopg2
+                url = db_conn_str
+                if url.startswith("postgres://"):
+                    url = url.replace("postgres://", "postgresql://", 1)
+                conn = psycopg2.connect(url)
+                g.db = PostgresConnectionWrapper(conn)
+            else:
+                g.db = sqlite3.connect(app.config["DATABASE"])
+                g.db.row_factory = sqlite3.Row
+                g.db.execute("PRAGMA foreign_keys = ON")
         return g.db
 
     @app.teardown_appcontext
@@ -543,9 +662,10 @@ def create_app(test_config: dict | None = None) -> Flask:
                 "INSERT INTO equipment (code,name,category,image_url,description,daily_rate,deposit_amount,stock_total,stock_available,condition,status,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 (str(payload["code"]).strip(), str(payload["name"]).strip(), payload["category"], normalize_image_url(payload.get("image_url")), payload.get("description", ""), rate, deposit, stock, stock, payload.get("condition", "excellent"), payload.get("status", "available"), now(), now()),
             )
-            get_db().commit()
-        except sqlite3.IntegrityError:
-            return jsonify(error="Equipment code already exists"), 409
+        except Exception as e:
+            if "IntegrityError" in type(e).__name__ or "UniqueViolation" in type(e).__name__:
+                return jsonify(error="Equipment code already exists"), 409
+            raise e
         return jsonify(equipment_dict(get_db().execute("SELECT * FROM equipment WHERE id=?", (cursor.lastrowid,)).fetchone())), 201
 
     @app.patch("/api/equipment/<int:equipment_id>")
