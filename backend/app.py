@@ -311,6 +311,10 @@ def create_app(test_config: dict | None = None) -> Flask:
                     add_missing_column("equipment_returns", column, definition)
                 seed_core_data()
                 db.commit()
+            else:
+                # Fix broken image URLs in existing data (fast, single query per item)
+                _fix_broken_image_urls(db)
+                db.commit()
         else:
             db.executescript((ROOT / "backend" / "schema.sql").read_text(encoding="utf-8"))
             for column, definition in {
@@ -327,6 +331,19 @@ def create_app(test_config: dict | None = None) -> Flask:
             seed_core_data()
             db.commit()
 
+    def _fix_broken_image_urls(db):
+        """Replace broken sanishtech image URLs with reliable Unsplash URLs."""
+        equipment_images = {
+            "CAM-104": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&h=300&fit=crop",
+            "CAM-210": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+            "LEN-208": "https://images.unsplash.com/photo-1617005082133-548c4dd27f35?w=400&h=300&fit=crop",
+            "GIM-312": "https://images.unsplash.com/photo-1598743400863-0038e86c90da?w=400&h=300&fit=crop",
+            "AUD-118": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&h=300&fit=crop",
+            "LGT-410": "https://images.unsplash.com/photo-1471341971476-ae15ff5dd4ea?w=400&h=300&fit=crop",
+        }
+        for code, url in equipment_images.items():
+            db.execute("UPDATE equipment SET image_url=? WHERE code=? AND (image_url='' OR image_url LIKE '%sanishtech%')", (url, code))
+
     def seed_core_data() -> None:
         db = get_db()
         accounts = [
@@ -339,14 +356,26 @@ def create_app(test_config: dict | None = None) -> Flask:
                 (name, email, phone, generate_password_hash(password), role, now(), now()),
             )
         db.execute("UPDATE users SET name=?, updated_at=? WHERE lower(email)=?", ("Rahul", now(), "user@sd-digitals.com"))
+        # Reliable product image URLs
+        equipment_images = {
+            "CAM-104": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&h=300&fit=crop",
+            "CAM-210": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=400&h=300&fit=crop",
+            "LEN-208": "https://images.unsplash.com/photo-1617005082133-548c4dd27f35?w=400&h=300&fit=crop",
+            "GIM-312": "https://images.unsplash.com/photo-1598743400863-0038e86c90da?w=400&h=300&fit=crop",
+            "AUD-118": "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&h=300&fit=crop",
+            "LGT-410": "https://images.unsplash.com/photo-1471341971476-ae15ff5dd4ea?w=400&h=300&fit=crop",
+        }
+        # Update existing equipment with reliable image URLs
+        for code, url in equipment_images.items():
+            db.execute("UPDATE equipment SET image_url=? WHERE code=? AND (image_url='' OR image_url LIKE '%sanishtech%')", (url, code))
         if db.execute("SELECT COUNT(*) FROM equipment").fetchone()[0] == 0:
             inventory = [
-                ("CAM-104", "Sony A7 IV", "Camera", "https://img.sanishtech.com/u/d8014da5839dc5f745735faa0d258c4c.png", "33 MP full-frame hybrid camera", 2500, 30000, 2, 2),
-                ("CAM-210", "Canon EOS R6 Mark II", "Camera", "https://img.sanishtech.com/u/0d8884127f2719bb117b75190796e3b5.png", "Full-frame mirrorless camera", 2800, 32000, 2, 2),
-                ("LEN-208", "Canon RF 70-200mm", "Lens", "https://img.sanishtech.com/u/755e7618114c6b325c14b22ae7369cd8.png", "Professional telephoto zoom lens", 1400, 18000, 3, 3),
-                ("GIM-312", "DJI RS 4 Pro", "Gimbal", "https://img.sanishtech.com/u/afe2af4e797933cc83a950c8bc28a122.png", "Cinema camera stabilizer", 1200, 15000, 2, 2),
-                ("AUD-118", "Rode Wireless PRO", "Audio", "https://img.sanishtech.com/u/43e091aacefff4f2fd317e373bf79cc7.png", "Dual-channel wireless microphone", 850, 10000, 4, 4),
-                ("LGT-410", "Aputure 300D II", "Lighting", "https://img.sanishtech.com/u/062eff6a077389025fe08b8b5635bb73.png", "Daylight LED studio light", 1100, 14000, 2, 2),
+                ("CAM-104", "Sony A7 IV", "Camera", equipment_images["CAM-104"], "33 MP full-frame hybrid camera", 2500, 30000, 2, 2),
+                ("CAM-210", "Canon EOS R6 Mark II", "Camera", equipment_images["CAM-210"], "Full-frame mirrorless camera", 2800, 32000, 2, 2),
+                ("LEN-208", "Canon RF 70-200mm", "Lens", equipment_images["LEN-208"], "Professional telephoto zoom lens", 1400, 18000, 3, 3),
+                ("GIM-312", "DJI RS 4 Pro", "Gimbal", equipment_images["GIM-312"], "Cinema camera stabilizer", 1200, 15000, 2, 2),
+                ("AUD-118", "Rode Wireless PRO", "Audio", equipment_images["AUD-118"], "Dual-channel wireless microphone", 850, 10000, 4, 4),
+                ("LGT-410", "Aputure 300D II", "Lighting", equipment_images["LGT-410"], "Daylight LED studio light", 1100, 14000, 2, 2),
             ]
             db.executemany(
                 "INSERT INTO equipment (code,name,category,image_url,description,daily_rate,deposit_amount,stock_total,stock_available,condition,status,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?, 'excellent','available',?,?)",
