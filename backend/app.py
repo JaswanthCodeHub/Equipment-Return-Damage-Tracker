@@ -280,33 +280,52 @@ def create_app(test_config: dict | None = None) -> Flask:
     def init_db() -> None:
         db = get_db()
         if is_postgres:
-            schema_sql = (ROOT / "backend" / "schema.sql").read_text(encoding="utf-8")
-            schema_sql = schema_sql.replace("INTEGER PRIMARY KEY AUTOINCREMENT", "SERIAL PRIMARY KEY")
-            schema_sql = schema_sql.replace("REAL", "DOUBLE PRECISION")
-            for statement in schema_sql.split(";"):
-                statement = statement.strip()
-                if statement and not statement.upper().startswith("PRAGMA"):
-                    try:
-                        db.execute(statement)
-                    except Exception:
-                        db.rollback()
-                        db.execute(statement)
-            db.commit()
+            # Check if tables already exist to avoid slow re-initialization on every cold start
+            check = db.execute(
+                "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_name='users'"
+            ).fetchone()
+            tables_exist = check[0] > 0 if check else False
+            if not tables_exist:
+                schema_sql = (ROOT / "backend" / "schema.sql").read_text(encoding="utf-8")
+                schema_sql = schema_sql.replace("INTEGER PRIMARY KEY AUTOINCREMENT", "SERIAL PRIMARY KEY")
+                schema_sql = schema_sql.replace("REAL", "DOUBLE PRECISION")
+                for statement in schema_sql.split(";"):
+                    statement = statement.strip()
+                    if statement and not statement.upper().startswith("PRAGMA"):
+                        try:
+                            db.execute(statement)
+                        except Exception:
+                            db.rollback()
+                            db.execute(statement)
+                db.commit()
+                for column, definition in {
+                    "image_url": "TEXT DEFAULT ''",
+                }.items():
+                    add_missing_column("equipment", column, definition)
+                for column, definition in {
+                    "user_id": "INTEGER REFERENCES users(id)",
+                    "booking_id": "INTEGER REFERENCES bookings(id)",
+                    "return_request_status": "TEXT NOT NULL DEFAULT 'pending'",
+                    "deduction_status": "TEXT NOT NULL DEFAULT 'pending'",
+                }.items():
+                    add_missing_column("equipment_returns", column, definition)
+                seed_core_data()
+                db.commit()
         else:
             db.executescript((ROOT / "backend" / "schema.sql").read_text(encoding="utf-8"))
-        for column, definition in {
-            "image_url": "TEXT DEFAULT ''",
-        }.items():
-            add_missing_column("equipment", column, definition)
-        for column, definition in {
-            "user_id": "INTEGER REFERENCES users(id)",
-            "booking_id": "INTEGER REFERENCES bookings(id)",
-            "return_request_status": "TEXT NOT NULL DEFAULT 'pending'",
-            "deduction_status": "TEXT NOT NULL DEFAULT 'pending'",
-        }.items():
-            add_missing_column("equipment_returns", column, definition)
-        seed_core_data()
-        db.commit()
+            for column, definition in {
+                "image_url": "TEXT DEFAULT ''",
+            }.items():
+                add_missing_column("equipment", column, definition)
+            for column, definition in {
+                "user_id": "INTEGER REFERENCES users(id)",
+                "booking_id": "INTEGER REFERENCES bookings(id)",
+                "return_request_status": "TEXT NOT NULL DEFAULT 'pending'",
+                "deduction_status": "TEXT NOT NULL DEFAULT 'pending'",
+            }.items():
+                add_missing_column("equipment_returns", column, definition)
+            seed_core_data()
+            db.commit()
 
     def seed_core_data() -> None:
         db = get_db()
